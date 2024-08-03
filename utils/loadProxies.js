@@ -11,6 +11,11 @@ export default async () => {
     });
       
     await fetcher.fetch();
+
+    if(!fetcher.random()) {
+        console.error("Could not found any proxies in proxies.txt");
+        process.exit();
+    }
     
     fetcher.refetchOnInterval(10_000);
 
