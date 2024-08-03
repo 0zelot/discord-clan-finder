@@ -1,31 +1,22 @@
-import { fetchers } from "proxy-master";
 import { ProxyAgent } from "undici";
+
+import { writeFile } from "fs/promises";
+import { setTimeout as wait } from "node:timers/promises";
+
+import loadProxies from "./utils/loadProxies.js";
+import loadData from "./utils/loadData.js";
+import filterClans from "./utils/filterClans.js";
+import saveUnavailableClans from "./utils/saveUnavailableClans.js";
 
 import config from "./config.json" assert { type: "json" };
 
-import { setTimeout as wait } from "node:timers/promises";
-import { readFile, writeFile } from "fs/promises";
-
 (async () => {
 
-    console.log("Loading proxies...");
-
-    const fetcher = fetchers.combine({
-        fetchers: [      
-            fetchers.file({ path: "./proxies.txt" }),
-        ]
-    });
-      
-    await fetcher.fetch();
-
-    fetcher.refetchOnInterval(10_000);
+    const fetcher = await loadProxies();
 
     let ratelimit = 0;
 
-    const available = JSON.parse(await readFile("./data/available.json"));
-    const unavailable = JSON.parse(await readFile("./data/unavailable.json"));
-
-    console.log(`Loaded ${available.length} available and ${unavailable.length} unavailable saved clans.`);
+    const { available, unavailable } = await loadData();
 
     const res = await fetch("https://discord.com/api/v9/discovery/games/all", {
         headers: {
@@ -40,20 +31,11 @@ import { readFile, writeFile } from "fs/promises";
 
     console.log(`Got ${clans.length} clans...`);
 
-    if(config.max_members) {
-        clans = clans.filter(item => (item.member_count <= config.max_members));
-        console.log(`Got ${clans.length} clans... (clans up to ${config.max_members} members)`);
-    }
-
-    clans = clans.filter(item => !unavailable.includes(item.id));
-    console.log(`Got ${clans.length} clans... (ignored already checked clans)`);
+    clans = await filterClans(clans, unavailable);
 
     console.log("Starting checking...");
 
-    setInterval(async () => {
-        await writeFile("./data/unavailable.json", JSON.stringify(unavailable, null, 2));
-        console.log("Results have been saved.")
-    }, config.save_interval * 1000)
+    setInterval(async () => await saveUnavailableClans(unavailable), config.save_interval * 1000);
 
     for(const clan of clans) {
 
@@ -122,7 +104,7 @@ import { readFile, writeFile } from "fs/promises";
 
     }
 
-    await writeFile("./data/unavailable.json", JSON.stringify(unavailable, null, 2));
+    await saveUnavailableClans(unavailable);
 
     process.exit();
 
