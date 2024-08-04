@@ -94,6 +94,11 @@ import config from "./config.json" assert { type: "json" };
 
                 console.log(`[${clan.id}] [${clan.tag}] [${displayProxy}] Updated old clan [${clan.name}] - ${clanBody.instant_invite}`);
 
+                saved.invite = clanBody.instant_invite;
+                saved.tag = clan.tag;
+                saved.name = clan.name;
+                await writeFile("./data/available.json", JSON.stringify(available, null, 2));
+
                 continue;
 
             }
