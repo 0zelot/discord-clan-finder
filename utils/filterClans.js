@@ -7,7 +7,7 @@ export default async (clans, unavailable, available) => {
         console.log(`Got ${clans.length} clans... (clans up to ${config.max_members} members)`);
     }
 
-    clans = clans.filter(item => (!unavailable.includes(item.id) && !available.find(availableClan => availableClan.id == item.id)));
+    clans = clans.filter(item => !unavailable.includes(item.id));
     console.log(`Got ${clans.length} clans... (ignored already checked clans)`);
     
     return clans;

@@ -77,11 +77,28 @@ import config from "./config.json" assert { type: "json" };
                 unavailable.push(clan.id);
                 continue;
             }
+
+            const saved = available.find(item => item.id == clan.id);
+
+            if(saved && saved.messageId) {
+
+                await fetch(`${config.webhook}/messages/${saved.messageId}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        content: `# [${clan.tag}] ${clan.name}\n\n_${clan.description.slice(0, 1600)}_\n\n${clanBody.instant_invite}\n\n-# ${clan.id}`
+                    })
+                });
+
+                console.log(`[${clan.id}] [${clan.tag}] [${displayProxy}] Updated old clan [${clan.name}] - ${clanBody.instant_invite}`);
+
+                continue;
+
+            }
     
-            available.push({ id: clan.id, name: clan.name, tag: clan.tag, invite: clanBody.instant_invite, foundAt: Date.now() });
-            await writeFile("./data/available.json", JSON.stringify(available, null, 2));
-    
-            await fetch(config.webhook, {
+            const webhook = await fetch(`${config.webhook}?wait=true`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -89,7 +106,12 @@ import config from "./config.json" assert { type: "json" };
                 body: JSON.stringify({
                     content: `# [${clan.tag}] ${clan.name}\n\n_${clan.description.slice(0, 1600)}_\n\n${clanBody.instant_invite}\n\n-# ${clan.id}`
                 })
-            })
+            });
+
+            const webhookData = await webhook.json();
+
+            available.push({ id: clan.id, name: clan.name, tag: clan.tag, invite: clanBody.instant_invite, messageId: webhookData.id, foundAt: Date.now() });
+            await writeFile("./data/available.json", JSON.stringify(available, null, 2));
     
             console.log(`[${clan.id}] [${clan.tag}] [${displayProxy}] Found new clan [${clan.name}] - ${clanBody.instant_invite}`);
 
