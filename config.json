@@ -1,0 +1,8 @@
+{
+    "token": "your discord account token here",
+    "cooldown": 1,
+    "save_interval": 15,
+    "max_members": 200,
+    "max_ratelimit_attempts": 10,
+    "webhook": "your discord webhook url here"
+}
