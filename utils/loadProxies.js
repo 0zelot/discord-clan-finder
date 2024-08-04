@@ -13,7 +13,7 @@ export default async () => {
     await fetcher.fetch();
 
     if(!fetcher.random()) {
-        console.error("Could not found any proxies in proxies.txt");
+        console.error("Could not found any proxies in proxies.txt or all are dead");
         process.exit();
     }
     

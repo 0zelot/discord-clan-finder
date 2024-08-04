@@ -31,7 +31,7 @@ import config from "./config.json" assert { type: "json" };
 
     console.log(`Got ${clans.length} clans...`);
 
-    clans = await filterClans(clans, unavailable);
+    clans = await filterClans(clans, unavailable, available);
 
     console.log("Starting checking...");
 
@@ -75,11 +75,6 @@ import config from "./config.json" assert { type: "json" };
             if(!clanBody.instant_invite) {
                 console.log(`[${clan.id}] [${clan.tag}] [${displayProxy}] Could not found public invite`);
                 unavailable.push(clan.id);
-                continue;
-            }
-    
-            if(available.find(item => item.invite == clanBody.instant_invite)) { // Checking this here because if new invite to previously sent clan appear, we can handle it
-                console.log(`[${clan.id}] [${clan.tag}] [${displayProxy}] Already saved as available`);
                 continue;
             }
     
