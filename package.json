@@ -1,7 +1,23 @@
 {
     "type": "module",
     "dependencies": {
-        "node-fetch": "^2.7.0",
         "proxy-master": "^1.5.5"
-    }
+    },
+    "name": "discord-clan-finder",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/0zelot/discord-clan-finder.git"
+    },
+    "author": "Ozelot <contact@ozelot.ovh> (https://ozelot.ovh/)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/0zelot/discord-clan-finder/issues"
+    },
+    "homepage": "https://github.com/0zelot/discord-clan-finder#readme",
+    "description": ""
 }
