@@ -1,3 +1,9 @@
+### Warning
+
+**This Discord feature is discontinued - clans don't work that way anymore. If you are just looking for a tag, see here - https://nelly.tools/tags**
+
+---
+
 # discord-clan-finder
 
 A simple Discord Clan finder tool. Learn more about Discord Clans [here](https://support.discord.com/hc/en-us/articles/23187611406999-Guilds-FAQ) or search for `discord clans` on youtube.
